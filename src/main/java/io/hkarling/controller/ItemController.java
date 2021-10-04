@@ -1,7 +1,6 @@
-package io.hkarling.web;
+package io.hkarling.controller;
 
 import io.hkarling.domain.item.Book;
-import io.hkarling.domain.item.Item;
 import io.hkarling.service.ItemService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -62,15 +61,23 @@ public class ItemController {
 
     @PostMapping("items/{itemId}/edit")
     public String updateItem(@PathVariable("itemId") Long itemId, @ModelAttribute("form") BookForm form) {
-        Book book = new Book();
-        book.setId(form.getId());
-        book.setName(form.getName());
-        book.setPrice(form.getPrice());
-        book.setStockQuantity(form.getStockQuantity());
-        book.setAuthor(form.getAuthor());
-        book.setIsbn(form.getIsbn());
 
-        itemService.saveItem(book);
+        // !! Controller 단에서 어설프게 Entity 를 생성하지 마라
+
+//        Book book = new Book();
+//        book.setId(form.getId());
+//        book.setName(form.getName());
+//        book.setPrice(form.getPrice());
+//        book.setStockQuantity(form.getStockQuantity());
+//        book.setAuthor(form.getAuthor());
+//        book.setIsbn(form.getIsbn());
+//
+//        itemService.saveItem(book);
+
+        // 속성이 많을 경우 서비스 레이어에서 DTO 를 생성한다.
+
+        itemService.updateItem(itemId, form.getName(), form.getPrice(), form.getStockQuantity());
+
         return "redirect:/items";
     }
 }

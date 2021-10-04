@@ -30,7 +30,7 @@ public class OrderRepository {
     // public List<Order> findAll(OrderSearch orderSearch) { }
 
     // 실무에서 쓰라는게 아니다 1
-    private List<Order> findAllByString(OrderSearch orderSearch) {
+    public List<Order> findAllByString(OrderSearch orderSearch) {
         //language=JPQL
         String jpql = "select o From Order o join o.member m";
         boolean isFirstCondition = true;
@@ -73,7 +73,7 @@ public class OrderRepository {
      * @return
      */
     // 실무에서 쓰라는게 아니다 2
-    private List<Order> findAllByCriteria(OrderSearch orderSearch) {
+    public List<Order> findAllByCriteria(OrderSearch orderSearch) {
 
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<Order> cq = cb.createQuery(Order.class);

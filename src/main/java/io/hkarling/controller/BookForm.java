@@ -1,4 +1,4 @@
-package io.hkarling.web;
+package io.hkarling.controller;
 
 import lombok.Getter;
 import lombok.Setter;

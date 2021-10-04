@@ -1,4 +1,4 @@
-package io.hkarling.web;
+package io.hkarling.controller;
 
 import io.hkarling.domain.Address;
 import io.hkarling.domain.Member;
@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
