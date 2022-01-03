@@ -1,5 +1,6 @@
 package io.hkarling.repository;
 
+import io.hkarling.api.OrderSampleApiController;
 import io.hkarling.domain.Member;
 import io.hkarling.domain.Order;
 import io.hkarling.domain.OrderSearch;
@@ -97,5 +98,11 @@ public class OrderRepository {
         TypedQuery<Order> query = em.createQuery(cq).setMaxResults(1000); // MAX 1000 rows
 
         return query.getResultList();
+    }
+
+    public List<Order> findAllMemberWithDelivery() {
+        return em.createQuery(
+                "select o from Order o join fetch o.member m join fetch o.delivery d", Order.class
+        ).getResultList();
     }
 }
