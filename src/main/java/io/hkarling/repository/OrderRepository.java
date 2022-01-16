@@ -1,9 +1,14 @@
 package io.hkarling.repository;
 
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import io.hkarling.api.OrderSampleApiController;
 import io.hkarling.domain.Member;
 import io.hkarling.domain.Order;
 import io.hkarling.domain.OrderSearch;
+import io.hkarling.domain.OrderStatus;
+import io.hkarling.domain.QMember;
+import io.hkarling.domain.QOrder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
@@ -28,9 +33,41 @@ public class OrderRepository {
         return em.find(Order.class, id);
     }
 
-    // public List<Order> findAll(OrderSearch orderSearch) { }
+    /**
+     * QueryDSL -> 기가막히져..
+     */
+    public List<Order> findAll(OrderSearch orderSearch) {
+        QOrder order = QOrder.order;
+        QMember member = QMember.member;
 
-    // 실무에서 쓰라는게 아니다 1
+        JPAQueryFactory query = new JPAQueryFactory(em);
+
+        return query
+            .select(order)
+            .from(order)
+            .join(order.member, member)
+            .where(statusEq(orderSearch.getOrderStatus()), nameLike(orderSearch.getMemberName()))
+            .limit(1000)
+            .fetch();
+    }
+
+    private BooleanExpression nameLike(String nameCond) {
+        if (!StringUtils.hasText(nameCond)) {
+            return null;
+        }
+        return QMember.member.name.like(nameCond);
+    }
+
+    private BooleanExpression statusEq(OrderStatus statusCond) {
+        if(statusCond == null)
+            return null;
+        return QOrder.order.status.eq(statusCond);
+    }
+
+    /**
+     * JPQL Query 만들기...
+     * 실무에서 쓰라는게 아니다 1
+     */
     public List<Order> findAllByString(OrderSearch orderSearch) {
         //language=JPQL
         String jpql = "select o From Order o join o.member m";
@@ -69,11 +106,8 @@ public class OrderRepository {
 
     /**
      * JPA Criteria
-     *
-     * @param orderSearch
-     * @return
+     * 실무에서 쓰라는게 아니다 2
      */
-    // 실무에서 쓰라는게 아니다 2
     public List<Order> findAllByCriteria(OrderSearch orderSearch) {
 
         CriteriaBuilder cb = em.getCriteriaBuilder();
