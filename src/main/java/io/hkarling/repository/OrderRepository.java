@@ -100,6 +100,7 @@ public class OrderRepository {
         return query.getResultList();
     }
 
+    // 패치조인
     public List<Order> findAllMemberWithDelivery() {
         return em.createQuery(
                 "select o from Order o join fetch o.member m join fetch o.delivery d", Order.class
