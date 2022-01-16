@@ -103,7 +103,38 @@ public class OrderRepository {
     // 패치조인
     public List<Order> findAllMemberWithDelivery() {
         return em.createQuery(
-                "select o from Order o join fetch o.member m join fetch o.delivery d", Order.class
-        ).getResultList();
+                "select o from Order o " +
+                        "join fetch o.member m " +
+                        "join fetch o.delivery d", Order.class)
+                .getResultList();
     }
+
+    public List<Order> findAllMemberWithDelivery(int offset, int limit) {
+        return em.createQuery(
+                        "select o from Order o " +
+                                "join fetch o.member m " +
+                                "join fetch o.delivery d", Order.class)
+                .setFirstResult(offset)
+                .setMaxResults(limit)
+                .getResultList();
+    }
+
+    public List<Order> findAllWithItem() {
+        /**
+         * distinct : 1대다 조인이 있으므로 데이터베이스 row가 증가한다.
+         * 그 결과 같은 order 엔티티의 조회 수도 증가하게 된다.
+         * JPA의 distinct는 SQL에 distinct를 추가하고, 더해서 같은 엔티티가 조회되면, 애플리케이션에서 중복을 걸러준다
+         * 단, 페이징이 안된다.
+         */
+        return em.createQuery(
+                "select distinct o from Order o " +
+                        "join fetch o.member m " +
+                        "join fetch o.delivery d " +
+                        "join fetch o.orderItems oi " +
+                        "join fetch oi.item i", Order.class)
+                .setFirstResult(1)
+                .setMaxResults(100)
+                .getResultList();
+    }
+
 }
